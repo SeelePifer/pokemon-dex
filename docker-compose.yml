@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: pokemondex
+      POSTGRES_USER: pokemon
+      POSTGRES_PASSWORD: pokemon
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pokemon -d pokemondex"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pokemondex-data:/var/lib/postgresql/data
+
+  api:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/pokemondex
+      SPRING_DATASOURCE_USERNAME: pokemon
+      SPRING_DATASOURCE_PASSWORD: pokemon
+      JWT_SECRET: interview-demo-secret-key-must-be-32b
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  web:
+    build: ./frontend
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
+
+volumes:
+  pokemondex-data:

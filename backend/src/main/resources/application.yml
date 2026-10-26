@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: pokemon-dex
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/pokemondex}
+    username: ${SPRING_DATASOURCE_USERNAME:pokemon}
+    password: ${SPRING_DATASOURCE_PASSWORD:pokemon}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        type:
+          preferred_instant_jdbc_type: TIMESTAMP
+  flyway:
+    enabled: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  web:
+    locale: en
+    locale-resolver: fixed
+
+server:
+  port: 8080
+
+pokemondex:
+  pokeapi:
+    base-url: https://pokeapi.co/api/v2
+    parallelism: 8
+  jwt:
+    secret: ${JWT_SECRET:interview-demo-secret-key-must-be-32b}
+    expiration-minutes: 120
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
